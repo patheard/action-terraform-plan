@@ -29,7 +29,6 @@ try {
 
   // Run Terraform commands
   const commands = [
-    'terraform version',
     'terraform init',
     'terraform validate',
     'terraform fmt --check',
@@ -44,9 +43,11 @@ try {
 
 
   // Comment on PR if changes or errors
-  const token = core.getInput('github-token', {required: true});  
-  const octokit = github.getOctokit(token);
-  addComment(octokit, github.context);
+  if(core.getInput('add-comment') === 'true'){
+    const token = core.getInput('github-token');  
+    const octokit = github.getOctokit(token);
+    addComment(octokit, github.context);
+  }
 
 } catch (error) {
   core.setFailed(error.message);

@@ -1,0 +1,14 @@
+name: 'Terraform Plan'
+description: 'Terraform init, validate, format check and plan'
+author: 'Pat Heard'
+
+inputs:
+    GITHUB_TOKEN:
+      description: 'GitHub Token'
+      required: true
+
+outputs:
+
+runs:
+  using: 'node12'
+  main: 'index.js'

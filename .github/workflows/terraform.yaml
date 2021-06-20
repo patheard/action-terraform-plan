@@ -1,0 +1,21 @@
+name: Terraform plan
+on: push
+
+env:
+  AWS_ACCESS_KEY_ID: foo
+  AWS_SECRET_KEY: bar
+
+jobs:
+  terraform:
+     runs-on: ubuntu-latest
+     steps: 
+      - uses: actions/checkout@v1
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+
+      - name: Terraform plan
+        uses: ./.github/actions/terraform-plan
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  

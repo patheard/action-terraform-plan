@@ -7,7 +7,17 @@ const execCommand = command => {
   console.log(result.toString('utf8'));
 };
 
-const addComment = (octokit, context, comment) => {
+const removeIndent = str => ('' + str).replace(/(\n)\s+/g, '$1');
+const addComment = (octokit, context) => {
+  const comment = removeIndent
+    `# Comment heading
+    Comment body
+    \`\`\`sh
+    # another comment
+    ls -la
+    \`\`\`
+    `;
+
   octokit.rest.issues.createComment({
     ...context.repo,
     issue_number: context.payload.pull_request.number,
@@ -16,8 +26,6 @@ const addComment = (octokit, context, comment) => {
 };
 
 try {
-
-  const token = core.getInput('github-token', {required: true});
 
   // Run Terraform commands
   const commands = [
@@ -36,16 +44,9 @@ try {
 
 
   // Comment on PR if changes or errors
+  const token = core.getInput('github-token', {required: true});  
   const octokit = github.getOctokit(token);
-  const context = github.context;  
-  const comment = `# Comment heading
-Comment body
-\`\`\`sh
-# another comment
-ls -la
-\`\`\`
-`;
-  addComment(octokit, context, comment);
+  addComment(octokit, github.context);
 
 } catch (error) {
   core.setFailed(error.message);

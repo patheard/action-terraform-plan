@@ -35,7 +35,7 @@ try {
 
 
   // Comment on PR if changes or errors
-  const octokit = github.getOctokit(token, opts)
+  const octokit = github.getOctokit(token);
   const context = github.context;  
   const comment = `# Comment heading
 Comment body

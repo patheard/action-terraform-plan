@@ -10,6 +10,7 @@ const execCommand = command => {
 const addComment = (octokit, context, comment) => {
   octokit.issues.createComment({
     ...context.repo,
+    issue_number: context.payload.pull_request.number,
     body: comment
   });
 };

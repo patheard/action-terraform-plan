@@ -1,10 +1,6 @@
 name: Terraform plan
 on: push
 
-env:
-  AWS_ACCESS_KEY_ID: foo
-  AWS_SECRET_KEY: bar
-
 jobs:
   terraform:
      runs-on: ubuntu-latest

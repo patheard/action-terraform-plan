@@ -7,8 +7,6 @@ inputs:
       description: 'GitHub Token'
       required: true
 
-outputs:
-
 runs:
   using: 'node12'
   main: 'index.js'

@@ -3,9 +3,9 @@ description: 'Terraform init, validate, format check and plan'
 author: 'Pat Heard'
 
 inputs:
-    GITHUB_TOKEN:
-      description: 'GitHub Token'
-      required: true
+  github-token:
+    description: 'GitHub Token'
+    required: true
 
 runs:
   using: 'node12'

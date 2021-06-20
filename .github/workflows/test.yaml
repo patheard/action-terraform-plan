@@ -1,9 +1,9 @@
-name: Terraform plan
+name: Test action
 on: 
   pull_request:
 
 jobs:
-  terraform:
+  test:
      runs-on: ubuntu-latest
      steps: 
       - uses: actions/checkout@v1
@@ -13,6 +13,7 @@ jobs:
           terraform_version: 1.0.0
 
       - name: Terraform plan
-        uses: ./.github/actions/terraform-plan
+        uses: ./
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}  
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          add-comment: false

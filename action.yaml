@@ -1,0 +1,16 @@
+name: 'Terraform Plan'
+description: 'Terraform init, validate, format check and plan'
+author: 'Pat Heard'
+
+inputs:
+  github-token:
+    description: 'GitHub Token used to add comment to PR'
+    required: false
+  add-comment:
+    description: 'Add comment with changes to the PR'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

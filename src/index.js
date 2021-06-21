@@ -32,8 +32,9 @@ try {
   let results = {};
 
   for(let command of commands){
+    console.log('Running: \x1b[36m%s\x1b[0m\n', command.exec);
     results[command.key] = proc.execSync(command.exec, {cwd: directory}).toString('utf8')
-    console.log(results[command.key]);  
+    console.log(results[command.key]);
   }
 
   // Comment on PR if changes or errors

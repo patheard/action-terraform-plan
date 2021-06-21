@@ -3,13 +3,19 @@ description: 'Terraform init, validate, format check and plan'
 author: 'Pat Heard'
 
 inputs:
-  github-token:
-    description: 'GitHub Token used to add comment to PR'
-    required: false
   add-comment:
     description: 'Add comment with changes to the PR'
     required: false
     default: 'true'
+  directory:
+    description: 'Directory with the *.tf files to validate'
+    required: false
+    default: '.'    
+  github-token:
+    description: 'GitHub Token used to add comment to PR'
+    required: false
+
+    
 
 runs:
   using: 'node12'

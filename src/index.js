@@ -2,8 +2,8 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const proc = require('child_process');
 
-const execCommand = command => {
-  const result = proc.execSync(command);
+const execCommand = (command, workingDir) => {
+  const result = proc.execSync(command, {cwd: workingDir});
   console.log(result.toString('utf8'));
 };
 
@@ -32,15 +32,14 @@ try {
     'terraform init',
     'terraform validate',
     'terraform fmt --check',
-    'terraform plan'
+    'terraform plan -json -out=plan.tfplan',
+    'terraform show plan.tfplan'
   ];
 
-  for(let c of commands){
-    execCommand(c);
+  const dir = core.getInput('directory');
+  for(let command of commands){
+    execCommand(command, dir);
   }
-
-  // Open Policy Agent to check results
-
 
   // Comment on PR if changes or errors
   if(core.getInput('add-comment') === 'true'){

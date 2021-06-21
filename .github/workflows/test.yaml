@@ -15,4 +15,5 @@ jobs:
       - name: Terraform plan
         uses: ./
         with:
+          directory: test
           github-token: ${{ secrets.GITHUB_TOKEN }}

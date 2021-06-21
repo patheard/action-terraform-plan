@@ -15,6 +15,14 @@ terraform plan
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+
+# Run on a sub project folder
+- name: Terraform plan
+  uses: patheard/action-terraform-plan
+  with:
+    directory: ./infra
+    github-token: ${{ secrets.GITHUB_TOKEN }} 
+
 # Run Terraform plan with no PR comment
 - name: Terraform plan
   uses: patheard/action-terraform-plan

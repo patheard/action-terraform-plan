@@ -6288,8 +6288,8 @@ const core = __nccwpck_require__(186);
 const github = __nccwpck_require__(438);
 const proc = __nccwpck_require__(129);
 
-const execCommand = command => {
-  const result = proc.execSync(command);
+const execCommand = (command, workingDir) => {
+  const result = proc.execSync(command, {cwd: workingDir});
   console.log(result.toString('utf8'));
 };
 
@@ -6318,15 +6318,14 @@ try {
     'terraform init',
     'terraform validate',
     'terraform fmt --check',
-    'terraform plan'
+    'terraform plan -json -out=plan.tfplan',
+    'terraform show plan.tfplan'
   ];
 
-  for(let c of commands){
-    execCommand(c);
+  const dir = core.getInput('directory');
+  for(let command of commands){
+    execCommand(command, dir);
   }
-
-  // Open Policy Agent to check results
-
 
   // Comment on PR if changes or errors
   if(core.getInput('add-comment') === 'true'){

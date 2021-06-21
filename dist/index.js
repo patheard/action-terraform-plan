@@ -6289,15 +6289,14 @@ const github = __nccwpck_require__(438);
 const proc = __nccwpck_require__(129);
 
 const addComment = (octokit, context, title, results) => {
-  const comment =
-`# ${title}
+  const comment = `## ${title}
 <details>
 <summary>Show plan</summary>
+
 \`\`\`terraform
 ${results.show}
 \`\`\`
-</details>
-`;
+</details>`;
 
   octokit.rest.issues.createComment({
     ...context.repo,
@@ -6327,7 +6326,7 @@ try {
   if(core.getInput('comment') === 'true'){
     const token = core.getInput('github-token');  
     const octokit = github.getOctokit(token);
-    addComment(octokit, github.context, core.getInput('title'), results);
+    addComment(octokit, github.context, core.getInput('comment-title'), results);
   }
 
 } catch (error) {

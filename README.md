@@ -23,7 +23,6 @@ terraform plan
 ```
 
 # TODO
-- [ ] Use Open Policy Agent to get a count of all changes
 - [ ] Add a comment to the PR with the changes and plan
 - [x] Restructure project into proper action
 - [ ] Add tests

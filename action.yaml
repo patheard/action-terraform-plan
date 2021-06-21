@@ -3,10 +3,14 @@ description: 'Terraform init, validate, format check and plan'
 author: 'Pat Heard'
 
 inputs:
-  add-comment:
+  comment:
     description: 'Add comment with changes to the PR'
     required: false
     default: 'true'
+  comment-title:
+    description: 'The title to give the PR comment'
+    required: false
+    default: 'Plan changes'    
   directory:
     description: 'Directory with the *.tf files to validate'
     required: false

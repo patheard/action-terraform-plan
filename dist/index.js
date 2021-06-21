@@ -6288,21 +6288,15 @@ const core = __nccwpck_require__(186);
 const github = __nccwpck_require__(438);
 const proc = __nccwpck_require__(129);
 
-const execCommand = (command, workingDir) => {
-  const result = proc.execSync(command, {cwd: workingDir});
-  console.log(result.toString('utf8'));
-};
+const addComment = (octokit, context, title, results) => {
+  const comment = `## ${title}
+<details>
+<summary>Show plan</summary>
 
-const removeIndent = str => ('' + str).replace(/(\n)\s+/g, '$1');
-const addComment = (octokit, context) => {
-  const comment = removeIndent
-    `# Comment heading
-    Comment body
-    \`\`\`sh
-    # another comment
-    ls -la
-    \`\`\`
-    `;
+\`\`\`terraform
+${results.show}
+\`\`\`
+</details>`;
 
   octokit.rest.issues.createComment({
     ...context.repo,
@@ -6313,25 +6307,26 @@ const addComment = (octokit, context) => {
 
 try {
 
-  // Run Terraform commands
+  const directory = core.getInput('directory');
   const commands = [
-    'terraform init',
-    'terraform validate',
-    'terraform fmt --check',
-    'terraform plan -json -out=plan.tfplan',
-    'terraform show plan.tfplan'
+    {key: 'init',     exec: 'terraform init'},
+    {key: 'validate', exec: 'terraform validate'},
+    {key: 'fmt',      exec: 'terraform fmt --check'},
+    {key: 'plan',     exec: 'terraform plan -json -out=plan.tfplan'},
+    {key: 'show',     exec: 'terraform show plan.tfplan -no-color'},
   ];
+  let results = {};
 
-  const dir = core.getInput('directory');
   for(let command of commands){
-    execCommand(command, dir);
+    results[command.key] = proc.execSync(command.exec, {cwd: directory}).toString('utf8')
+    console.log(results[command.key]);  
   }
 
   // Comment on PR if changes or errors
-  if(core.getInput('add-comment') === 'true'){
+  if(core.getInput('comment') === 'true'){
     const token = core.getInput('github-token');  
     const octokit = github.getOctokit(token);
-    addComment(octokit, github.context);
+    addComment(octokit, github.context, core.getInput('comment-title'), results);
   }
 
 } catch (error) {

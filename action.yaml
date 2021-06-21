@@ -13,9 +13,7 @@ inputs:
     default: '.'    
   github-token:
     description: 'GitHub Token used to add comment to PR'
-    required: false
-
-    
+    required: false    
 
 runs:
   using: 'node12'

@@ -5,8 +5,8 @@ const proc = require('child_process');
 const addComment = (octokit, context, title, results) => {
 
   const comment = `## ${title}
-**${ result.fmt.isSuccess ?  '✅' : '❌' } &nbsp; Terraform Format:** \`${ result.fmt.isSuccess ? 'success' : 'failed' }\`
-**${ result.plan.isSuccess ? '✅' : '❌' } &nbsp; Terraform Plan:** \`${ result.plan.isSuccess ?  'success' : 'failed' }\`
+**${ results.fmt.isSuccess ?  '✅' : '❌' } &nbsp; Terraform Format:** \`${ results.fmt.isSuccess ? 'success' : 'failed' }\`
+**${ results.plan.isSuccess ? '✅' : '❌' } &nbsp; Terraform Plan:** \`${ results.plan.isSuccess ?  'success' : 'failed' }\`
 <details>
 <summary>Show plan</summary>
 
@@ -42,7 +42,7 @@ const run = () => {
     let output, exitCode = 0;
 
     try {
-      console.log('Running: \x1b[36m%s\x1b[0m\n', command.exec);
+      console.log('🧪 \x1b[36m%s\x1b[0m\n', command.exec);
       output = proc.execSync(command.exec, {cwd: directory}).toString('utf8');
       console.log(output);
     } catch (error) {

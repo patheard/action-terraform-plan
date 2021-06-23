@@ -4,8 +4,15 @@ on:
 
 jobs:
   test:
-     runs-on: ubuntu-latest
-     steps: 
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: 
+          - changes
+          - no-changes
+  
+    steps: 
       - uses: actions/checkout@v1
 
       - uses: hashicorp/setup-terraform@v1
@@ -13,9 +20,9 @@ jobs:
           terraform_version: 1.0.0
           terraform_wrapper: false
 
-      - name: Terraform plan
+      - name: Test ${{ matrix.test }}
         uses: ./
         with:
-          directory: test
-          comment-title: Plan changes
+          directory: test/${{ matrix.test }}
+          comment-title: Test ${{ matrix.test }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

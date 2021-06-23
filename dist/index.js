@@ -6289,12 +6289,15 @@ const github = __nccwpck_require__(438);
 const proc = __nccwpck_require__(129);
 
 const addComment = (octokit, context, title, results) => {
+
   const comment = `## ${title}
+**${ results.fmt.isSuccess ?  '✅' : '❌' } &nbsp; Terraform Format:** \`${ results.fmt.isSuccess ? 'success' : 'failed' }\`
+**${ results.plan.isSuccess ? '✅' : '❌' } &nbsp; Terraform Plan:** \`${ results.plan.isSuccess ?  'success' : 'failed' }\`
 <details>
 <summary>Show plan</summary>
 
 \`\`\`terraform
-${results.show}
+${results.show.output}
 \`\`\`
 </details>`;
 
@@ -6305,34 +6308,56 @@ ${results.show}
   });
 };
 
-try {
-
+const run = () => {
   const directory = core.getInput('directory');
+  const isComment = core.getInput('comment') === 'true';
+  const isTerragrunt = core.getInput('terragrunt') === 'true';
+  const binary = isTerragrunt ? 'terragrunt' : 'terraform';
+
   const commands = [
-    {key: 'init',     exec: 'terraform init'},
-    {key: 'validate', exec: 'terraform validate'},
-    {key: 'fmt',      exec: 'terraform fmt --check'},
-    {key: 'plan',     exec: 'terraform plan -json -out=plan.tfplan'},
-    {key: 'show',     exec: 'terraform show plan.tfplan -no-color'},
+    {key: 'init',     exec: `${binary} init`},
+    {key: 'validate', exec: `${binary} validate`},
+    {key: 'fmt',      exec: `${binary} fmt --check`},
+    {key: 'plan',     exec: `${binary} plan -json -out=plan.tfplan`},
+    {key: 'show',     exec: `${binary} show plan.tfplan -no-color`},
   ];
   let results = {};
+  let isError = false;
 
   for(let command of commands){
-    console.log('Running: \x1b[36m%s\x1b[0m\n', command.exec);
-    results[command.key] = proc.execSync(command.exec, {cwd: directory}).toString('utf8')
-    console.log(results[command.key]);
+    let output, exitCode = 0;
+
+    try {
+      console.log('🧪 \x1b[36m%s\x1b[0m\n', command.exec);
+      output = proc.execSync(command.exec, {cwd: directory}).toString('utf8');
+      console.log(output);
+    } catch (error) {
+      isError = true;
+      exitCode = error.exitCode;
+      output = error.message.toString('utf8');
+    }
+
+    results[command.key] = {
+      isSuccess: exitCode === 0,
+      output: output
+    }
   }
 
   // Comment on PR if changes or errors
-  if(core.getInput('comment') === 'true'){
-    const token = core.getInput('github-token');  
+  const isChanges = results.plan.output.indexOf('"type":"planned_change"') > -1;
+  if(isComment && isChanges){
+    const token = core.getInput('github-token');
     const octokit = github.getOctokit(token);
     addComment(octokit, github.context, core.getInput('comment-title'), results);
   }
 
-} catch (error) {
-  core.setFailed(error.message);
+  if(isError){
+    core.setFailed("Terraform plan failed");
+  }
 }
+
+run();
+
 })();
 
 module.exports = __webpack_exports__;

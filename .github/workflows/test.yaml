@@ -11,11 +11,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test: 
-          - changes
-          - format-error
-          - invalid
-          - no-changes
+        include:
+          - test: changes
+            allow-failure: false
+
+          - test: no-changes
+            allow-failure: false
+
+          - test: format-error
+            allow-failure: true
+
+          - test: invalid
+            allow-failure: true
   
     steps: 
       - uses: actions/checkout@v1
@@ -29,5 +36,6 @@ jobs:
         uses: ./
         with:
           directory: test/${{ matrix.test }}
+          allow-failure: ${{ matrix.allow-failure }}
           comment-title: Test ${{ matrix.test }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

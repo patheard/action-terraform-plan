@@ -6310,6 +6310,7 @@ ${results.show.output}
 
 const run = () => {
   const directory = core.getInput('directory');
+  const isAllowFailure = core.getInput('allow-failure') === 'true';
   const isComment = core.getInput('comment') === 'true';
   const isTerragrunt = core.getInput('terragrunt') === 'true';
   const binary = isTerragrunt ? 'terragrunt' : 'terraform';
@@ -6351,7 +6352,7 @@ const run = () => {
     addComment(octokit, github.context, core.getInput('comment-title'), results);
   }
 
-  if(isError){
+  if(isError && !isAllowFailure){
     core.setFailed("Terraform plan failed");
   }
 }

@@ -3,6 +3,10 @@ description: 'Terraform init, validate, format check and plan'
 author: 'Pat Heard'
 
 inputs:
+  allow-failure:
+    description: 'Allow the action to fail'
+    required: false
+    default: 'false'
   comment:
     description: 'Add comment with changes to the PR'
     required: false
